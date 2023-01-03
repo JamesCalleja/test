@@ -1,23 +1,21 @@
-version: '3'
+version: "3"
 services:
-  webapp1:
+  web:
     build: .
-    networks:
-      - webapp
-  webapp2:
-    build: .
-    networks:
-      - webapp
+    ports:
+      - "80:80"
   haproxy:
     image: haproxy:latest
     ports:
-      - "80:80"
       - "443:443"
-    networks:
-      - webapp
-    depends_on:
-      - webapp1
-      - webapp2
-networks:
-  webapp:
-    driver: bridge
+    environment:
+      - BACKEND_SERVERS=server1:80,server2:80
+  server1:
+    image: nginx:latest
+    ports:
+      - "80"
+  server2:
+    image: nginx:latest
+    ports:
+      - "80"
+
